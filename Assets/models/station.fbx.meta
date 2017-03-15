@@ -8,15 +8,20 @@ ModelImporter:
     100000: doorway
     100002: hall
     100004: //RootNode
+    100006: room
     400000: doorway
     400002: hall
     400004: //RootNode
+    400006: room
     2300000: doorway
     2300002: hall
+    2300004: room
     3300000: doorway
     3300002: hall
+    3300004: room
     4300000: hall
     4300002: doorway
+    4300004: room
   materials:
     importMaterials: 0
     materialName: 0
