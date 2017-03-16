@@ -39,14 +39,13 @@ public class MagnetController : MonoBehaviour {
 			else {
 				if (push && state.mode != Mode.Push) { state.mode = Mode.Push; }
 				if (pull && state.mode != Mode.Pull) { state.mode = Mode.Pull; }
-				Vector3 worldSpaceAnchor = state.target.transform.TransformPoint(state.anchor);
-				Vector3 force = worldSpaceAnchor - transform.position;
+				Vector3 force = state.worldSpaceAnchor - transform.position;
 				float distance = force.magnitude;
 				force = force.normalized * attenuation.Evaluate(distance / range) * forceMagnitude * (int) state.mode;
 				if (state.target.body != null) {
-					state.target.body.AddForceAtPosition(force, worldSpaceAnchor);
+					state.target.body.AddForceAtPosition(force, state.worldSpaceAnchor);
 				}
-				body.AddForce(-force);
+				body.AddForce(- force);
 			}
 		}
 		else {
@@ -62,6 +61,19 @@ public class MagnetController : MonoBehaviour {
 		public Mode mode;				// is the magnet pushing, pulling, or off
 		public Magnetic target;		// currently targeted magnetic object
 		public Vector3 anchor;		// where on the target is the effect anchored (local to target space)
+
+		public bool isActive {
+			get {
+				return mode != Mode.Off;
+			}
+		}
+
+		public Vector3 worldSpaceAnchor {
+			get {
+				return target.transform.TransformPoint(anchor);
+			}
+		}
+
 	}
 
 }
