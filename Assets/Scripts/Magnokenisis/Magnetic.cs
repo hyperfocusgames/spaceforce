@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Magnetic : MonoBehaviour
 {
-	Rigidbody rb;
+	public Rigidbody rb;
 
 	void Start()
 	{

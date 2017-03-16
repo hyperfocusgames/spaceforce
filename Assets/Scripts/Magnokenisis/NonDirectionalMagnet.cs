@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class NonDirectionalMagnet : Magnet
 {
@@ -22,23 +20,19 @@ public class NonDirectionalMagnet : Magnet
 				float totalMass = rb.mass + targetRB.mass;
 				
 				// Force on this
-				f = (gradiant / toTarget.magnitude) * ((pull) ? 1 : -1) * (targetRB.mass / totalMass);
+				f = (gradiant / toTarget.magnitude) * ((pull) ? -1 : 1) * (targetRB.mass / totalMass);
 				rb.AddForce(f * toTarget, ForceMode.Force);
 
 				// Force on target
-				f = (gradiant / toTarget.magnitude) * ((pull) ? 1 : -1) * (rb.mass / totalMass);
+				f = (gradiant / toTarget.magnitude) * ((pull) ? -1 : 1) * (rb.mass / totalMass);
 				targetRB.AddForce(f * -toTarget, ForceMode.Force);
-
-				//Debug.Log("move both " + f);
 			}
 			else					// ... and this is non-movable ...
 			{
 										// ... apply a force to target only
 				// Force on target
-				f =(gradiant / toTarget.magnitude) * ((pull) ? 1 : -1);
+				f = (gradiant / toTarget.magnitude) * ((pull) ? 1 : -1);
 				targetRB.AddForce(f * -toTarget, ForceMode.Force);
-
-				//Debug.Log("move target " + f);
 			}
 		}
 		else					// If target is non-movable ...
@@ -47,18 +41,13 @@ public class NonDirectionalMagnet : Magnet
 			{
 										// ... apply a force to this only
 				// Force on this
-				f = (gradiant / toTarget.magnitude) * ((pull) ? 1 : -1);
+				f = (gradiant / toTarget.magnitude) * ((pull) ? -1 : 1);
 				rb.AddForce(f * toTarget, ForceMode.Force);
-
-				//Debug.Log("move this " + f);
 			}
 			else					// ... and this is non-movable ...
 			{
 										// ... DO NOTHING
-				//Debug.Log("move nothing");
 			}
 		}
-
-		Debug.Log(f);
 	}
 }

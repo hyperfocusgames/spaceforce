@@ -1,15 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEditor;
+﻿using UnityEngine;
 
 public class Magnet : MonoBehaviour
 {
 	protected Rigidbody rb;
 	//public float force = 1;
 	public float gradiant = 1;
-
-	public GameObject target;		// TESTING : REMOVE WHEN DONE
 
     public Vector3 M
 	{
@@ -19,11 +14,6 @@ public class Magnet : MonoBehaviour
     protected void Start()
 	{
 		rb = GetComponent<Rigidbody>();
-	}
-
-	protected void Update()
-	{
-		force(target, true);
 	}
 
 	public virtual void force(GameObject target, bool pull)
@@ -36,13 +26,9 @@ public class Magnet : MonoBehaviour
 
 		// Vector to target position
 		Vector3 toTarget = target.transform.position - transform.position;
-		if(toTarget.y > 0)
-		{								// TODO: Fix this
-										// Problem: If this is below target, push/pull is inverted
+		if(toTarget.y > 0)	// This is below target
+		{					// Invert forces
 			directionModifier = -1;
-
-			//Debug.Log("below");
-			//toTarget = transform.position - target.transform.position;
 		}
 
 		float f = 0;	// Force to be applied
@@ -55,14 +41,12 @@ public class Magnet : MonoBehaviour
 				float totalMass = rb.mass + targetRB.mass;
 				
 				// Force on this
-				f = Vector3.Dot(M, toTarget) * ((pull) ? -1 : 1) * (rb.mass / totalMass) * directionModifier;
+				f = Vector3.Dot(M, toTarget) * ((pull) ? -1 : 1) * (targetRB.mass / totalMass) * directionModifier;
 				rb.AddForce(f * toTarget, ForceMode.Force);
 
 				// Force on target
 				f = Vector3.Dot(M, toTarget) * ((pull) ? -1 : 1) * (targetRB.mass / totalMass) * directionModifier;
 				targetRB.AddForce(f * -toTarget, ForceMode.Force);
-
-				//Debug.Log("move both " + f);
 			}
 			else					// ... and this is non-movable ...
 			{
@@ -70,7 +54,6 @@ public class Magnet : MonoBehaviour
 				// Force on target
 				f = Vector3.Dot(M, toTarget) * ((pull) ? -1 : 1) * directionModifier;
 				targetRB.AddForce(f * -toTarget, ForceMode.Force);
-
 				//Debug.Log("move target " + f);
 			}
 		}
@@ -82,37 +65,11 @@ public class Magnet : MonoBehaviour
 				// Force on this
 				f = Vector3.Dot(M, toTarget) * (gradiant / toTarget.magnitude) * ((pull) ? -1 : 1) * directionModifier;
 				rb.AddForce(f * toTarget, ForceMode.Force);
-
-				//Debug.Log("move this " + f);
 			}
 			else					// ... and this is non-movable ...
 			{
 										// ... DO NOTHING
-				//Debug.Log("move nothing");
 			}
 		}
-	}
-}
-
-[CustomEditor(typeof(Magnet))]
-public class MagnetEditor : Editor
-{
-	public override void OnInspectorGUI()
-    {
-
-		// ************************ TESTING ************************
-        base.OnInspectorGUI();
-		Magnet t = (Magnet) target;
-		
-		if(GUILayout.Button("pull"))
-		{
-			t.force(t.target, true);
-		}
-
-		if(GUILayout.Button("push"))
-		{
-			t.force(t.target, false);
-		}
-		// *********************************************************
 	}
 }
