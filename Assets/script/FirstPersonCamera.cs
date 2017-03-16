@@ -2,12 +2,15 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class PlayerController : MonoBehaviour {
+public class FirstPersonCamera : MonoBehaviour {
 
 	public float mouselookSensitivity = 5;
 	public float rollSpeed = 25;
 
 	void Awake() {
+		if (!Application.isEditor) {
+			Cursor.lockState = CursorLockMode.Locked;
+		}
 	}
 
 	void Update() {
