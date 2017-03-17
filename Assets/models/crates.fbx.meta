@@ -6,10 +6,19 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: crate
+    100004: crate2
     400000: //RootNode
+    400002: crate
+    400004: crate2
     2300000: //RootNode
+    2300002: crate
+    2300004: crate2
     3300000: //RootNode
+    3300002: crate
+    3300004: crate2
     4300000: crate
+    4300002: crate2
   materials:
     importMaterials: 0
     materialName: 0
