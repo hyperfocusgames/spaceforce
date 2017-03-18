@@ -8,9 +8,6 @@ public class FirstPersonCamera : MonoBehaviour {
 	public float rollSpeed = 25;
 
 	void Awake() {
-		if (!Application.isEditor) {
-			Cursor.lockState = CursorLockMode.Locked;
-		}
 	}
 
 	void Update() {
