@@ -13,7 +13,7 @@ public class FirstPersonCamera : MonoBehaviour {
 	void Update() {
 		float roll = Input.GetAxis("Roll") * rollSpeed * Time.deltaTime;
 		Vector2 mouse = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-		mouse *= mouselookSensitivity;
+		mouse *= mouselookSensitivity * Time.timeScale;
 		transform.Rotate(-mouse.y, mouse.x, roll);
 	}
 

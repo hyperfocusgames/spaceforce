@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class GameManager : SingletonBehaviour<GameManager> {
 
-	public RectTransform pauseMenu;
+	public RectTransform pauseScreen;
 
 	bool _isPaused = false;
 	public bool isPaused {
@@ -13,17 +13,24 @@ public class GameManager : SingletonBehaviour<GameManager> {
 		}
 		set {
 			_isPaused = value;
-			pauseMenu.gameObject.SetActive(value);
-			// Cursor.visible = value;
+			pauseScreen.gameObject.SetActive(value);
+			Cursor.visible = value;
 			if (value) {
 				Time.timeScale = 0;
-				// Cursor.lockState = CursorLockMode.None;
+				Cursor.lockState = CursorLockMode.None;
 			}
 			else {
 				Time.timeScale = 1;
-				// Cursor.lockState = CursorLockMode.Locked;
+				// unity pls fix your linux editor
+				if (Application.platform != RuntimePlatform.LinuxEditor) {
+					Cursor.lockState = CursorLockMode.Locked;
+				}
 			}
 		}
+	}
+
+	void Start() {
+		isPaused = false;
 	}
 
 	void Update() {
