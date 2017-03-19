@@ -7,8 +7,6 @@ public class MagnetController : MonoBehaviour {
 	public float forceMagnitude = 100;
 	public float range = 10;
 	public AnimationCurve attenuation = AnimationCurve.Linear(0, 1, 1, 0);
-	public float radius = 0.5f;
-
 
 	public MagnetState pushState { get; private set; }
 	public MagnetState pullState { get; private set; }
@@ -44,7 +42,7 @@ public class MagnetController : MonoBehaviour {
 			if (state.mode != mode) {
 				state.target = null;
 				RaycastHit hit;
-				if (Physics.SphereCast(transform.position, radius, transform.forward, out hit, range)) {
+				if (Physics.Raycast(transform.position, transform.forward, out hit, range)) {
 					Magnetic target = hit.collider.GetComponent<Magnetic>();
 					if (target != null) {
 						state.target = target;
@@ -73,18 +71,6 @@ public class MagnetController : MonoBehaviour {
 		}
 	}
 
-	void OnDrawGizmos() {
-		Color color = Gizmos.color;
-		if (pushState != null && pushState.isActive) {
-			Gizmos.color = Color.red;
-			Gizmos.DrawWireSphere(pushState.worldSpaceAnchor, radius);
-		}
-		if (pullState != null && pullState.isActive) {
-			Gizmos.color = Color.blue;
-			Gizmos.DrawWireSphere(pullState.worldSpaceAnchor, radius);
-		}
-		Gizmos.color = color;
-	}
 
 	public enum Mode { Off = 0, Push = 1, Pull = -1 }
 
