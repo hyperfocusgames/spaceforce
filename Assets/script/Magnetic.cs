@@ -19,12 +19,12 @@ public class Magnetic : MonoBehaviour {
 	// given a world space point on the surface of this object, return the
 	// anchor point (in local space) that magnetic forces should be applied to
 	public Vector3 GetAnchor(Vector3 hit) {
-		if (isStatic) {
-			return transform.InverseTransformPoint(hit);
-		}
-		else {
-			return Vector3.zero; // the center of the object in local space is (0, 0, 0)
-		}
+		return transform.InverseTransformPoint(hit);
+		// if (isStatic) {
+		// }
+		// else {
+		// 	return Vector3.zero; // the center of the object in local space is (0, 0, 0)
+		// }
 	}
 
 }
