@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class MagnetBeamEffect : MonoBehaviour {
 
 	MagnetController controller;
-	MagnetController.MagnetState state;
+	MagnetController.State state;
 	LineRenderer line;
 
 	void Awake() {
@@ -14,7 +14,7 @@ public class MagnetBeamEffect : MonoBehaviour {
 		line.useWorldSpace = true;
 	}
 
-	public void Initialize(MagnetController controller, MagnetController.MagnetState state) {
+	public void Initialize(MagnetController controller, MagnetController.State state) {
 		this.controller = controller;
 		this.state = state;
 	}

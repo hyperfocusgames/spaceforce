@@ -8,8 +8,8 @@ public class MagnetController : MonoBehaviour {
 	public float range = 10;
 	public AnimationCurve attenuation = AnimationCurve.Linear(0, 1, 1, 0);
 
-	public MagnetState pushState { get; private set; }
-	public MagnetState pullState { get; private set; }
+	public State pushState { get; private set; }
+	public State pullState { get; private set; }
 
 	public MagnetBeamEffect pushBeamEffect;
 	public MagnetBeamEffect pullBeamEffect;
@@ -18,9 +18,9 @@ public class MagnetController : MonoBehaviour {
 
 	void Awake() {
 		body = GetComponent<Rigidbody>();
-		pushState = new MagnetState();
+		pushState = new State();
 		pushBeamEffect.Initialize(this, pushState);
-		pullState = new MagnetState();
+		pullState = new State();
 		pullBeamEffect.Initialize(this, pullState);
 	}
 
@@ -31,10 +31,13 @@ public class MagnetController : MonoBehaviour {
 		UpdateState(pullState, pull ? Mode.Pull : Mode.Off);
 	}
 
-	void UpdateState(MagnetState state, Mode mode) {
+	void UpdateState(State state, Mode mode) {
 		// if the mode is switching to off, turn off and do nothing this update
 		if (mode == Mode.Off) {
 			state.mode = Mode.Off;
+			if (state.target != null) {
+				state.target.mode = Mode.Off;
+			}
 			state.target = null;
 		}
 		else {
@@ -44,7 +47,7 @@ public class MagnetController : MonoBehaviour {
 				RaycastHit hit;
 				if (Physics.Raycast(transform.position, transform.forward, out hit, range)) {
 					Magnetic target = hit.collider.GetComponent<Magnetic>();
-					if (target != null) {
+					if (target != null && target.mode == Mode.Off) {
 						state.target = target;
 						state.anchor = target.GetAnchor(hit.point);
 						// Debug.DrawRay(hit.point, hit.normal);
@@ -63,6 +66,7 @@ public class MagnetController : MonoBehaviour {
 				Vector3 force = state.worldSpaceAnchor - transform.position;
 				float distance = force.magnitude;
 				force = force.normalized * attenuation.Evaluate(distance / range) * forceMagnitude * (int) mode;
+				state.target.mode = mode;
 				if (state.target.body != null) {
 					state.target.body.AddForceAtPosition(force, state.worldSpaceAnchor);
 				}
@@ -74,7 +78,7 @@ public class MagnetController : MonoBehaviour {
 
 	public enum Mode { Off = 0, Push = 1, Pull = -1 }
 
-	public class MagnetState {
+	public class State {
 
 		public Mode mode;								// is the magnet pushing, pulling, or off
 		public Magnetic target;						// currently targeted magnetic object
