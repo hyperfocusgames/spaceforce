@@ -53,7 +53,7 @@
 					if (radius2 - dist2 <= edgeWidth) {
 						intensity *= smoothstep(0, 1, (radius2 - dist2) /  edgeWidth);
 					}
-					color.w *= intensity;
+					color.w *= clamp(intensity, 0, 1);
 					return color;
 				}
 				else {

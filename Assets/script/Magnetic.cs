@@ -11,11 +11,13 @@ public class Magnetic : MonoBehaviour {
 	}
 
 	public Rigidbody body { get; private set; }
-	
+	public Renderer render { get; private set; }
+
 	public MagnetController.Mode mode { get; set; } // is this object being pushed, pulled, or not
 
 	void Awake() {
 		body = GetComponent<Rigidbody>();
+		render = GetComponent<Renderer>();
 	}
 
 	// given a world space point on the surface of this object, return the

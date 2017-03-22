@@ -14,7 +14,12 @@ public class MagnetController : MonoBehaviour {
 	public MagnetBeamEffect pushBeamEffect;
 	public MagnetBeamEffect pullBeamEffect;
 
+	public Material pushRippleMaterial;
+	public Material pullRippleMaterial;
+
 	Rigidbody body;
+
+	int rippleCenterPropertyID;
 
 	void Awake() {
 		body = GetComponent<Rigidbody>();
@@ -22,21 +27,27 @@ public class MagnetController : MonoBehaviour {
 		pushBeamEffect.Initialize(this, pushState);
 		pullState = new State();
 		pullBeamEffect.Initialize(this, pullState);
+		rippleCenterPropertyID = Shader.PropertyToID("_RippleCenter");
 	}
 
 	void FixedUpdate() {
 		bool push = Input.GetButton("Push");
 		bool pull = Input.GetButton("Pull");
-		UpdateState(pushState, push ? Mode.Push : Mode.Off);
-		UpdateState(pullState, pull ? Mode.Pull : Mode.Off);
+		UpdateState(pushState, push ? Mode.Push : Mode.Off, pushRippleMaterial);
+		UpdateState(pullState, pull ? Mode.Pull : Mode.Off, pullRippleMaterial);
 	}
 
-	void UpdateState(State state, Mode mode) {
+	void UpdateState(State state, Mode mode, Material rippleMaterial) {
 		// if the mode is switching to off, turn off and do nothing this update
 		if (mode == Mode.Off) {
 			state.mode = Mode.Off;
 			if (state.target != null) {
 				state.target.mode = Mode.Off;
+				Material[] mats = state.target.render.sharedMaterials;
+				if (mats.Length > 1) {
+					mats[1] = null;
+					state.target.render.sharedMaterials = mats;
+				}
 			}
 			state.target = null;
 		}
@@ -67,8 +78,22 @@ public class MagnetController : MonoBehaviour {
 				float distance = force.magnitude;
 				force = force.normalized * attenuation.Evaluate(distance / range) * forceMagnitude * (int) mode;
 				state.target.mode = mode;
+				Material[] mats = state.target.render.sharedMaterials;
+				if (mats.Length < 2) {
+					System.Array.Resize(ref mats, mats.Length + 1);
+				}
+				mats[1] = rippleMaterial;
+				state.target.render.sharedMaterials = mats;
+				Vector3 center = state.worldSpaceAnchor;
+				state.ripplePropertyBlock.SetVector(rippleCenterPropertyID, new Vector4(
+					center.x,
+					center.y,
+					center.z,
+					1
+				));
+				state.target.render.SetPropertyBlock(state.ripplePropertyBlock);
 				if (state.target.body != null) {
-					state.target.body.AddForceAtPosition(force, state.worldSpaceAnchor);
+					state.target.body.AddForceAtPosition(force, center);
 				}
 				body.AddForce(- force);
 			}
@@ -83,6 +108,11 @@ public class MagnetController : MonoBehaviour {
 		public Mode mode;								// is the magnet pushing, pulling, or off
 		public Magnetic target;						// currently targeted magnetic object
 		public Vector3 anchor;						// where on the target is the effect anchored (local to target space)
+		public MaterialPropertyBlock ripplePropertyBlock;
+
+		public State() {
+			ripplePropertyBlock = new MaterialPropertyBlock();
+		}
 
 		public bool isActive {
 			get {
