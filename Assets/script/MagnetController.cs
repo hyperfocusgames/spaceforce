@@ -61,6 +61,7 @@ public class MagnetController : MonoBehaviour {
 					if (target != null && target.mode == Mode.Off) {
 						state.target = target;
 						state.anchor = target.GetAnchor(hit.point);
+						state.normal = hit.normal.normalized;
 						// Debug.DrawRay(hit.point, hit.normal);
 					}
 				}
@@ -108,6 +109,7 @@ public class MagnetController : MonoBehaviour {
 		public Mode mode;								// is the magnet pushing, pulling, or off
 		public Magnetic target;						// currently targeted magnetic object
 		public Vector3 anchor;						// where on the target is the effect anchored (local to target space)
+		public Vector3 normal;						// the surface normal of the anchor
 		public MaterialPropertyBlock ripplePropertyBlock;
 
 		public State() {

@@ -3,9 +3,6 @@ using UnityEditor;
 
 public class BezierBeamEditor : ShaderGUI {
 
-	const int POINT_COUNT = 4;
-	const string POINTS_ARRAY_NAME = "curve_points";
-
 	Vector4[] points;
 	
 	public override void OnGUI(MaterialEditor editor, MaterialProperty[] properties) {
@@ -13,11 +10,11 @@ public class BezierBeamEditor : ShaderGUI {
 			editor.ShaderProperty(property, property.displayName);
 		}
 		Material mat = editor.target as Material;
-		Vector4[] points = mat.GetVectorArray(POINTS_ARRAY_NAME);
+		Vector4[] points = mat.GetVectorArray(MagnetBeamEffect.POINTS_ARRAY_NAME);
 		if (points == null) {
 			points = this.points;
 			if (points == null) {
-				points = new Vector4[POINT_COUNT];
+				points = new Vector4[MagnetBeamEffect.POINT_COUNT];
 			}
 		}
 		EditorGUILayout.LabelField("Curve Points");
@@ -28,7 +25,7 @@ public class BezierBeamEditor : ShaderGUI {
 			points[p] = point;
 		}
 		EditorGUI.indentLevel --;
-		mat.SetVectorArray(POINTS_ARRAY_NAME, points);
+		mat.SetVectorArray(MagnetBeamEffect.POINTS_ARRAY_NAME, points);
 		this.points = points;
 	}
 
