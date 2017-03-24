@@ -61,7 +61,6 @@ public class MagnetController : MonoBehaviour {
 					if (target != null && target.mode == Mode.Off) {
 						state.target = target;
 						state.anchor = target.GetAnchor(hit.point);
-						state.normal = hit.normal.normalized;
 						// Debug.DrawRay(hit.point, hit.normal);
 					}
 				}
@@ -75,26 +74,31 @@ public class MagnetController : MonoBehaviour {
 			}
 			// if the mode is not off, we have a target. do the magnet thing
 			if (state.isActive) {
-				Vector3 force = state.worldSpaceAnchor - transform.position;
-				float distance = force.magnitude;
-				force = force.normalized * attenuation.Evaluate(distance / range) * forceMagnitude * (int) mode;
-				state.target.mode = mode;
 				Material[] mats = state.target.render.sharedMaterials;
 				if (mats.Length < 2) {
 					System.Array.Resize(ref mats, mats.Length + 1);
 				}
 				mats[1] = rippleMaterial;
 				state.target.render.sharedMaterials = mats;
-				Vector3 center = state.worldSpaceAnchor;
+				Vector3 worldSpaceAnchor = state.worldSpaceAnchor;
 				state.ripplePropertyBlock.SetVector(rippleCenterPropertyID, new Vector4(
-					center.x,
-					center.y,
-					center.z,
+					worldSpaceAnchor.x,
+					worldSpaceAnchor.y,
+					worldSpaceAnchor.z,
 					1
 				));
 				state.target.render.SetPropertyBlock(state.ripplePropertyBlock);
+				state.target.mode = mode;
+				Vector3 toTarget = (worldSpaceAnchor - transform.position);
+				Vector3 dirToTarget = toTarget.normalized;
+				float distance = toTarget.magnitude;
+				state.normal = (transform.forward - dirToTarget);
+				Vector3 force
+					= (dirToTarget + state.normal * (int) mode).normalized
+					* attenuation.Evaluate(distance / range)
+					* forceMagnitude * (int) mode;
 				if (state.target.body != null) {
-					state.target.body.AddForceAtPosition(force, center);
+					state.target.body.AddForceAtPosition(force, worldSpaceAnchor);
 				}
 				body.AddForce(- force);
 			}
