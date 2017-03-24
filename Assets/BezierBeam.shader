@@ -8,6 +8,7 @@
 		Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
 		Blend SrcAlpha OneMinusSrcAlpha
 		ZWrite Off
+
 		Pass {
 CGPROGRAM			
 			#pragma vertex vert
@@ -16,6 +17,8 @@ CGPROGRAM
 			#include "UnityCG.cginc"
 
 			#define POINT_COUNT 4
+
+			sampler2D _CameraDepthTexture;
 
 			float4 curve_points[POINT_COUNT];
 
@@ -63,7 +66,8 @@ CGPROGRAM
 				v2f o;
 				o.t = v.z;
 				bezier_point bp = bezier(o.t);
-				v	= bp.pos
+				v
+					= bp.pos
 					+ bp.norm1 * v.x * _BeamWidth
 					+ bp.norm2 * v.y * _BeamWidth;
 				o.pos = mul(UNITY_MATRIX_VP, v);
