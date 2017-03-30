@@ -11,9 +11,13 @@ public class Magnetic : MonoBehaviour {
 	}
 
 	public Rigidbody body { get; private set; }
+	public Renderer render { get; private set; }
+
+	public MagnetController activeController { get; set; } // the controller actively affecting this object
 
 	void Awake() {
 		body = GetComponent<Rigidbody>();
+		render = GetComponent<Renderer>();
 	}
 
 	// given a world space point on the surface of this object, return the
