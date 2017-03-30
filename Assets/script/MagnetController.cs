@@ -4,134 +4,102 @@ using System.Collections.Generic;
 
 public class MagnetController : MonoBehaviour {
 
+	public enum Polarity { Push = 1, Pull = -1 }
+
+	public Polarity polarity = Polarity.Push;					// does this magnet push or pull?
+	public string axisName = "Push";
 	public float forceMagnitude = 100;
 	public float range = 10;
 	public AnimationCurve attenuation = AnimationCurve.Linear(0, 1, 1, 0);
 
-	public State pushState { get; private set; }
-	public State pullState { get; private set; }
 
-	public MagnetBeamEffect pushBeamEffect;
-	public MagnetBeamEffect pullBeamEffect;
-
-	public Material pushRippleMaterial;
-	public Material pullRippleMaterial;
+	public Material rippleMaterial;
 
 	Rigidbody body;
 
 	int rippleCenterPropertyID;
 
+	public Magnetic target { get; private set; }						// currently targeted magnetic object
+	public Vector3 anchor { get; private set; }						// where on the target is the effect anchored (local to target space)
+	public Vector3 normal { get; private set; }						// the surface normal of the anchor
+	public MaterialPropertyBlock ripplePropertyBlock { get; private set; }
+
+	public bool isActive {
+		get {
+			return target != null;
+		}
+	}
+
+	public Vector3 worldSpaceAnchor {
+		get {
+			return target.transform.TransformPoint(anchor);
+		}
+	}
+
 	void Awake() {
-		body = GetComponent<Rigidbody>();
-		pushState = new State();
-		pushBeamEffect.Initialize(this, pushState);
-		pullState = new State();
-		pullBeamEffect.Initialize(this, pullState);
+		body = GetComponentInParent<Rigidbody>();
 		rippleCenterPropertyID = Shader.PropertyToID("_RippleCenter");
+		ripplePropertyBlock = new MaterialPropertyBlock();
 	}
 
 	void FixedUpdate() {
-		bool push = Input.GetButton("Push");
-		bool pull = Input.GetButton("Pull");
-		UpdateState(pushState, push ? Mode.Push : Mode.Off, pushRippleMaterial);
-		UpdateState(pullState, pull ? Mode.Pull : Mode.Off, pullRippleMaterial);
-	}
-
-	void UpdateState(State state, Mode mode, Material rippleMaterial) {
+		bool input = Input.GetButton(axisName);
 		// if the mode is switching to off, turn off and do nothing this update
-		if (mode == Mode.Off) {
-			state.mode = Mode.Off;
-			if (state.target != null) {
-				state.target.mode = Mode.Off;
-				Material[] mats = state.target.render.sharedMaterials;
+		if (!input) {
+			if (target != null) {
+				Material[] mats = target.render.sharedMaterials;
 				if (mats.Length > 1) {
 					mats[1] = null;
-					state.target.render.sharedMaterials = mats;
+					target.render.sharedMaterials = mats;
 				}
 			}
-			state.target = null;
+			target = null;
 		}
 		else {
-			// if the mode switched, retarget
-			if (state.mode != mode) {
-				state.target = null;
+			// if we dont have a target, get one
+			if (target == null) {
 				RaycastHit hit;
-				if (Physics.Raycast(transform.position, transform.forward, out hit, range)) {
-					Magnetic target = hit.collider.GetComponent<Magnetic>();
-					if (target != null && target.mode == Mode.Off) {
-						state.target = target;
-						state.anchor = target.GetAnchor(hit.point);
+				if (Physics.Raycast(body.transform.position, body.transform.forward, out hit, range)) {
+					target = hit.collider.GetComponent<Magnetic>();
+					if (target != null) {
+						anchor = target.GetAnchor(hit.point);
 						// Debug.DrawRay(hit.point, hit.normal);
+					}
+					else {
+						target = null;
 					}
 				}
 			}
-			// if we have no target, turn off. otherwise, use requested mode
-			if (state.target == null) {
-				state.mode = Mode.Off;
-			}
-			else {
-				state.mode = mode;
-			}
-			// if the mode is not off, we have a target. do the magnet thing
-			if (state.isActive) {
-				Material[] mats = state.target.render.sharedMaterials;
+			// if we have a target, do the magnet thing
+			if (target) {
+				Material[] mats = target.render.sharedMaterials;
 				if (mats.Length < 2) {
 					System.Array.Resize(ref mats, mats.Length + 1);
 				}
 				mats[1] = rippleMaterial;
-				state.target.render.sharedMaterials = mats;
-				Vector3 worldSpaceAnchor = state.worldSpaceAnchor;
-				state.ripplePropertyBlock.SetVector(rippleCenterPropertyID, new Vector4(
+				target.render.sharedMaterials = mats;
+				Vector3 worldSpaceAnchor = this.worldSpaceAnchor;
+				ripplePropertyBlock.SetVector(rippleCenterPropertyID, new Vector4(
 					worldSpaceAnchor.x,
 					worldSpaceAnchor.y,
 					worldSpaceAnchor.z,
 					1
 				));
-				state.target.render.SetPropertyBlock(state.ripplePropertyBlock);
-				state.target.mode = mode;
+				target.render.SetPropertyBlock(ripplePropertyBlock);
 				Vector3 toTarget = (worldSpaceAnchor - transform.position);
 				Vector3 dirToTarget = toTarget.normalized;
 				float distance = toTarget.magnitude;
-				state.normal = (transform.forward - dirToTarget);
+				normal = (transform.forward - dirToTarget);
 				Vector3 force
-					= (dirToTarget + state.normal * (int) mode).normalized
+					= (dirToTarget + normal * (int) polarity).normalized
 					* attenuation.Evaluate(distance / range)
-					* forceMagnitude * (int) mode;
-				if (state.target.body != null) {
-					state.target.body.AddForceAtPosition(force, worldSpaceAnchor);
+					* forceMagnitude * (int) polarity;
+				if (target.body != null) {
+					target.body.AddForceAtPosition(force, worldSpaceAnchor);
 				}
 				body.AddForce(- force);
 			}
 		}
-	}
-
-
-	public enum Mode { Off = 0, Push = 1, Pull = -1 }
-
-	public class State {
-
-		public Mode mode;								// is the magnet pushing, pulling, or off
-		public Magnetic target;						// currently targeted magnetic object
-		public Vector3 anchor;						// where on the target is the effect anchored (local to target space)
-		public Vector3 normal;						// the surface normal of the anchor
-		public MaterialPropertyBlock ripplePropertyBlock;
-
-		public State() {
-			ripplePropertyBlock = new MaterialPropertyBlock();
-		}
-
-		public bool isActive {
-			get {
-				return mode != Mode.Off;
-			}
-		}
-
-		public Vector3 worldSpaceAnchor {
-			get {
-				return target.transform.TransformPoint(anchor);
-			}
-		}
-
 	}
 
 }

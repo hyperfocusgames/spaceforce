@@ -10,7 +10,6 @@ public class MagnetBeamEffect : MonoBehaviour {
 	public const int POINT_COUNT = 4;
 
 	MagnetController controller;
-	MagnetController.State state;
 	MeshRenderer render;
 
 	MaterialPropertyBlock propertyBlock;
@@ -19,25 +18,21 @@ public class MagnetBeamEffect : MonoBehaviour {
 	int pointsArrayID;
 
 	void Awake() {
+		controller = GetComponentInParent<MagnetController>();
 		render = GetComponent<MeshRenderer>();
 		curvePoints = new Vector4[POINT_COUNT];
 		pointsArrayID = Shader.PropertyToID(POINTS_ARRAY_NAME);
 		propertyBlock = new MaterialPropertyBlock();
 	}
 
-	public void Initialize(MagnetController controller, MagnetController.State state) {
-		this.controller = controller;
-		this.state = state;
-	}
-
 	void Update() {
-		render.enabled = state.isActive;
-		if (state.isActive) {
-			float distance = (state.worldSpaceAnchor - transform.position).magnitude;
+		render.enabled = controller.isActive;
+		if (controller.isActive) {
+			float distance = (controller.worldSpaceAnchor - transform.position).magnitude;
 			curvePoints[0] = transform.position;
 			curvePoints[1] = transform.position + transform.forward * normalStrength * distance;
-			curvePoints[2] = state.worldSpaceAnchor + state.normal * normalStrength * distance;
-			curvePoints[3] = state.worldSpaceAnchor;
+			curvePoints[2] = controller.worldSpaceAnchor + controller.normal * normalStrength * distance;
+			curvePoints[3] = controller.worldSpaceAnchor;
 			// make sure the last component of the vectors is correct for positions
 			for (int i = 0; i < curvePoints.Length; i ++) {
 				curvePoints[i].w = 1;
