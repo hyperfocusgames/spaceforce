@@ -31,7 +31,6 @@ CGPROGRAM
 				float4 pos: SV_POSITION;
 				float curvelength: TEXCOORD0;
 				float t: TEXCOORD1;
-				float4 screenPos : TEXCOORD2;
 			};
 
 			struct bezier_point {
@@ -77,8 +76,6 @@ CGPROGRAM
 				for (int i = 1; i < POINT_COUNT; i ++) {
 					o.curvelength += distance(curve_points[i], curve_points[i - 1]);
 				}
-				o.screenPos = ComputeScreenPos(o.pos);
-				// o.screenPos.y = 1 - o.screenPos.y;
 				return o;
 			}
 			
@@ -87,17 +84,6 @@ CGPROGRAM
 				color.w *= smoothstep(0, 1, i.t * i.curvelength / _FadeLength);
 				color.w *= smoothstep(0, 1, (1 - i.t) * i.curvelength / _FadeLength);
 				return color;
-				// TODO: depth stuff
-				float sceneZ = Linear01Depth (tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)).r);
-    			float objectZ = i.pos.z;
-    			// float intensityFactor = 1 - saturate(());
-				// float depth = Linear01Depth(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.screenPos)).r);
-				if (saturate(objectZ - sceneZ) < 0.1) {
-					return fixed4(1, 0, 0, 1);
-				}
-				else {
-					return fixed4(0, 0, 1, 1);
-				}
 			}
 ENDCG
 		}

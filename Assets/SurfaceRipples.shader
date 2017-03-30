@@ -14,6 +14,9 @@
 
 		Blend SrcAlpha OneMinusSrcAlpha
 
+		ZWrite Off
+		ZTest Always
+
 		Pass {
 
 			CGPROGRAM
