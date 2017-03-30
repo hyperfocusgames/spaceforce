@@ -44,6 +44,7 @@ public class MagnetController : MonoBehaviour {
 
 	void FixedUpdate() {
 		bool input = Input.GetButton(axisName);
+		Transform source = body.transform; // the source of the magnetic affect is not this object, but the root body
 		// if the mode is switching to off, turn off and do nothing this update
 		if (!input) {
 			if (target != null) {
@@ -52,6 +53,7 @@ public class MagnetController : MonoBehaviour {
 					mats[1] = null;
 					target.render.sharedMaterials = mats;
 				}
+				target.activeController = null;
 			}
 			target = null;
 		}
@@ -59,10 +61,11 @@ public class MagnetController : MonoBehaviour {
 			// if we dont have a target, get one
 			if (target == null) {
 				RaycastHit hit;
-				if (Physics.Raycast(body.transform.position, body.transform.forward, out hit, range)) {
+				if (Physics.Raycast(source.position, source.forward, out hit, range)) {
 					target = hit.collider.GetComponent<Magnetic>();
-					if (target != null) {
+					if (target != null && target.activeController == null) {
 						anchor = target.GetAnchor(hit.point);
+						target.activeController = this;
 						// Debug.DrawRay(hit.point, hit.normal);
 					}
 					else {
@@ -71,7 +74,7 @@ public class MagnetController : MonoBehaviour {
 				}
 			}
 			// if we have a target, do the magnet thing
-			if (target) {
+			if (target ) {
 				Material[] mats = target.render.sharedMaterials;
 				if (mats.Length < 2) {
 					System.Array.Resize(ref mats, mats.Length + 1);
@@ -86,10 +89,10 @@ public class MagnetController : MonoBehaviour {
 					1
 				));
 				target.render.SetPropertyBlock(ripplePropertyBlock);
-				Vector3 toTarget = (worldSpaceAnchor - transform.position);
+				Vector3 toTarget = (worldSpaceAnchor - source.position);
 				Vector3 dirToTarget = toTarget.normalized;
 				float distance = toTarget.magnitude;
-				normal = (transform.forward - dirToTarget);
+				normal = (source.forward - dirToTarget);
 				Vector3 force
 					= (dirToTarget + normal * (int) polarity).normalized
 					* attenuation.Evaluate(distance / range)
