@@ -47,17 +47,8 @@ public class MagnetController : MonoBehaviour {
 	void FixedUpdate() {
 		bool input = Input.GetButton(axisName);
 		Transform source = body.transform; // the source of the magnetic affect is not this object, but the root body
-		// if the mode is switching to off, turn off and do nothing this update
 		if (!input) {
-			if (target != null) {
-				Material[] mats = target.render.sharedMaterials;
-				if (mats.Length > 1) {
-					mats[1] = null;
-					target.render.sharedMaterials = mats;
-				}
-				target.activeController = null;
-			}
-			target = null;
+			Detarget();
 		}
 		else {
 			// if we dont have a target, get one
@@ -77,37 +68,59 @@ public class MagnetController : MonoBehaviour {
 			}
 			// if we have a target, do the magnet thing
 			if (target ) {
-				// ripple effect
-				Material[] mats = target.render.sharedMaterials;
-				if (mats.Length < 2) {
-					System.Array.Resize(ref mats, mats.Length + 1);
-				}
-				mats[1] = rippleMaterial;
-				target.render.sharedMaterials = mats;
+				
 				Vector3 worldSpaceAnchor = this.worldSpaceAnchor;
-				ripplePropertyBlock.SetVector(rippleCenterPropertyID, new Vector4(
-					worldSpaceAnchor.x,
-					worldSpaceAnchor.y,
-					worldSpaceAnchor.z,
-					1
-				));
-				target.render.SetPropertyBlock(ripplePropertyBlock);
-
-				// magnet force
 				Vector3 radial = worldSpaceAnchor - source.position;
 				float distance = radial.magnitude;
-				Vector3 lateral = Vector3.ProjectOnPlane(source.forward, radial);
-				float attenuation = distance / range;
-				Vector3 force
-					= radial.normalized * radialAttenuation.Evaluate(attenuation) * maxRadialForce * (int) polarity
-					+ lateral * lateralAttenuation.Evaluate(attenuation) * maxLateralForce;
-				normal = force.normalized;
-				if (target.body != null) {
-					target.body.AddForceAtPosition(force, worldSpaceAnchor);
+
+				if (distance > range) {
+					Detarget();
 				}
-				body.AddForce(- force);
+				else {
+					// otherwise, do the magnet thing
+
+					// magnet force
+					Vector3 lateral = Vector3.ProjectOnPlane(source.forward, radial);
+					float attenuation = distance / range;
+					Vector3 force
+						= radial.normalized * radialAttenuation.Evaluate(attenuation) * maxRadialForce * (int) polarity
+						+ lateral * lateralAttenuation.Evaluate(attenuation) * maxLateralForce;
+					normal = force.normalized;
+					if (target.body != null) {
+						target.body.AddForceAtPosition(force, worldSpaceAnchor);
+					}
+					body.AddForce(- force);
+
+					// ripple effect
+					Material[] mats = target.render.sharedMaterials;
+					if (mats.Length < 2) {
+						System.Array.Resize(ref mats, mats.Length + 1);
+					}
+					mats[1] = rippleMaterial;
+					target.render.sharedMaterials = mats;
+					ripplePropertyBlock.SetVector(rippleCenterPropertyID, new Vector4(
+						worldSpaceAnchor.x,
+						worldSpaceAnchor.y,
+						worldSpaceAnchor.z,
+						1
+					));
+					target.render.SetPropertyBlock(ripplePropertyBlock);
+				}
 			}
 		}
 	}
+
+	void Detarget() {
+		if (target != null) {
+				Material[] mats = target.render.sharedMaterials;
+				if (mats.Length > 1) {
+					mats[1] = null;
+					target.render.sharedMaterials = mats;
+				}
+				target.activeController = null;
+			}
+			target = null;
+	}
+
 
 }
