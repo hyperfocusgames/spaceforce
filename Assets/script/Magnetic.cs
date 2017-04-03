@@ -20,9 +20,18 @@ public class Magnetic : MonoBehaviour {
 		}
 	}
 
+	static int magneticFlag_ID;
+	static MaterialPropertyBlock block;
+
 	void Awake() {
 		body = GetComponent<Rigidbody>();
 		render = GetComponent<Renderer>();
+		if (block == null) {
+			block = new MaterialPropertyBlock();
+			magneticFlag_ID = Shader.PropertyToID("_MagneticFlag");
+			block.SetFloat(magneticFlag_ID, 1);
+		}
+		render.SetPropertyBlock(block);
 	}
 
 	// given a world space point on the surface of this object, return the

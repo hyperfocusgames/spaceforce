@@ -14,17 +14,11 @@ public class MagnetController : MonoBehaviour {
 	public AnimationCurve lateralAttenuation = AnimationCurve.Linear(0, 1, 1, 0);
 	public float range = 10;
 
-
-	public Material rippleMaterial;
-
 	Rigidbody body;
-
-	int rippleCenterPropertyID;
 
 	public Magnetic target { get; private set; }						// currently targeted magnetic object
 	public Vector3 anchor { get; private set; }						// where on the target is the effect anchored (local to target space)
 	public Vector3 normal { get; private set; }						// the surface normal of the anchor
-	public MaterialPropertyBlock ripplePropertyBlock { get; private set; }
 
 	public bool isActive {
 		get {
@@ -40,8 +34,6 @@ public class MagnetController : MonoBehaviour {
 
 	void Awake() {
 		body = GetComponentInParent<Rigidbody>();
-		rippleCenterPropertyID = Shader.PropertyToID("_RippleCenter");
-		ripplePropertyBlock = new MaterialPropertyBlock();
 	}
 
 	void FixedUpdate() {
@@ -96,19 +88,7 @@ public class MagnetController : MonoBehaviour {
 					body.AddForce(- force);
 
 					// ripple effect
-					Material[] mats = target.render.sharedMaterials;
-					if (mats.Length < 2) {
-						System.Array.Resize(ref mats, mats.Length + 1);
-					}
-					mats[1] = rippleMaterial;
-					target.render.sharedMaterials = mats;
-					ripplePropertyBlock.SetVector(rippleCenterPropertyID, new Vector4(
-						worldSpaceAnchor.x,
-						worldSpaceAnchor.y,
-						worldSpaceAnchor.z,
-						1
-					));
-					target.render.SetPropertyBlock(ripplePropertyBlock);
+					SurfaceRippleEffect.EnableRipple(polarity, worldSpaceAnchor);
 				}
 			}
 		}
@@ -116,11 +96,7 @@ public class MagnetController : MonoBehaviour {
 
 	void Detarget() {
 		if (target != null) {
-				Material[] mats = target.render.sharedMaterials;
-				if (mats.Length > 1) {
-					mats[1] = null;
-					target.render.sharedMaterials = mats;
-				}
+				SurfaceRippleEffect.DisableRipple(polarity);
 				target.activeController = null;
 			}
 			target = null;

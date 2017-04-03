@@ -358,6 +358,7 @@ GameObject:
   - component: {fileID: 124215124401694972}
   - component: {fileID: 81142316954099024}
   - component: {fileID: 114512321196566292}
+  - component: {fileID: 114119508904405468}
   m_Layer: 0
   m_Name: world camera
   m_TagString: Untagged
@@ -2368,6 +2369,24 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
+--- !u!114 &114119508904405468
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1281166885172824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 23b13c6977d7bbb4aa634cb310f114a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wavelength: 0.1
+  speed: 15
+  sharpness: 5
+  radius: 1.5
+  pulseWidth: 0.25
+  pushColor: {r: 1, g: 0.2352941, b: 0.2352941, a: 0.5019608}
+  pullColor: {r: 0.2352941, g: 0.46206895, b: 1, a: 0.5019608}
 --- !u!114 &114310476631861766
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2381,26 +2400,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   polarity: -1
   axisName: Pull
-  forceMagnitude: 500
-  range: 10
-  attenuation:
+  maxRadialForce: 500
+  radialAttenuation:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
       time: 0
       value: 1
-      inSlope: -0.0000002817674
-      outSlope: -0.0000002817674
+      inSlope: 0.018206848
+      outSlope: 0.018206848
       tangentMode: 0
     - serializedVersion: 2
       time: 1
       value: 0
-      inSlope: -2.321427
-      outSlope: -2.321427
+      inSlope: -3.0068035
+      outSlope: -3.0068035
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+  maxLateralForce: 500
+  lateralAttenuation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0.018206848
+      outSlope: 0.018206848
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: -3.0068035
+      outSlope: -3.0068035
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  range: 10
   rippleMaterial: {fileID: 2100000, guid: 3db061574b4aad7418c20e79fbd450a8, type: 2}
 --- !u!114 &114322353145869838
 MonoBehaviour:
@@ -2415,26 +2453,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   polarity: 1
   axisName: Push
-  forceMagnitude: 500
-  range: 10
-  attenuation:
+  maxRadialForce: 500
+  radialAttenuation:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 2
       time: 0
       value: 1
-      inSlope: -0.0000002817674
-      outSlope: -0.0000002817674
+      inSlope: 0.018206848
+      outSlope: 0.018206848
       tangentMode: 0
     - serializedVersion: 2
       time: 1
       value: 0
-      inSlope: -2.321427
-      outSlope: -2.321427
+      inSlope: -3.0068035
+      outSlope: -3.0068035
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+  maxLateralForce: 500
+  lateralAttenuation:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 2
+      time: 0
+      value: 1
+      inSlope: 0.018206848
+      outSlope: 0.018206848
+      tangentMode: 0
+    - serializedVersion: 2
+      time: 1
+      value: 0
+      inSlope: -3.0068035
+      outSlope: -3.0068035
+      tangentMode: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 0
+  range: 10
   rippleMaterial: {fileID: 2100000, guid: 28776ea2cd527e9459d83626ee197ece, type: 2}
 --- !u!114 &114341555381346488
 MonoBehaviour:
