@@ -86,6 +86,10 @@ public class MagnetController : MonoBehaviour {
 						= radial.normalized * radialAttenuation.Evaluate(attenuation) * maxRadialForce * (int) polarity
 						+ lateral * lateralAttenuation.Evaluate(attenuation) * maxLateralForce;
 					normal = force.normalized;
+					if (target.mass < body.mass) {
+						// if the target is less massive then the player, apply a weaker force
+						force *= target.mass / body.mass;
+					}
 					if (target.body != null) {
 						target.body.AddForceAtPosition(force, worldSpaceAnchor);
 					}

@@ -12,8 +12,13 @@ public class Magnetic : MonoBehaviour {
 
 	public Rigidbody body { get; private set; }
 	public Renderer render { get; private set; }
-
 	public MagnetController activeController { get; set; } // the controller actively affecting this object
+
+	public float mass {
+		get {
+			return this.body != null ? body.mass : Mathf.Infinity;
+		}
+	}
 
 	void Awake() {
 		body = GetComponent<Rigidbody>();
