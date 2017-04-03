@@ -8,9 +8,11 @@ public class MagnetController : MonoBehaviour {
 
 	public Polarity polarity = Polarity.Push;					// does this magnet push or pull?
 	public string axisName = "Push";
-	public float forceMagnitude = 100;
+	public float maxRadialForce = 750;
+	public AnimationCurve radialAttenuation = AnimationCurve.Linear(0, 1, 1, 0);
+	public float maxLateralForce = 100;
+	public AnimationCurve lateralAttenuation = AnimationCurve.Linear(0, 1, 1, 0);
 	public float range = 10;
-	public AnimationCurve attenuation = AnimationCurve.Linear(0, 1, 1, 0);
 
 
 	public Material rippleMaterial;
@@ -63,7 +65,7 @@ public class MagnetController : MonoBehaviour {
 				RaycastHit hit;
 				if (Physics.Raycast(source.position, source.forward, out hit, range)) {
 					target = hit.collider.GetComponent<Magnetic>();
-					if (target != null && target.activeController == null) {
+					if (target != null) {
 						anchor = target.GetAnchor(hit.point);
 						target.activeController = this;
 						// Debug.DrawRay(hit.point, hit.normal);
@@ -75,6 +77,7 @@ public class MagnetController : MonoBehaviour {
 			}
 			// if we have a target, do the magnet thing
 			if (target ) {
+				// ripple effect
 				Material[] mats = target.render.sharedMaterials;
 				if (mats.Length < 2) {
 					System.Array.Resize(ref mats, mats.Length + 1);
@@ -89,14 +92,16 @@ public class MagnetController : MonoBehaviour {
 					1
 				));
 				target.render.SetPropertyBlock(ripplePropertyBlock);
-				Vector3 toTarget = (worldSpaceAnchor - source.position);
-				Vector3 dirToTarget = toTarget.normalized;
-				float distance = toTarget.magnitude;
-				normal = (source.forward - dirToTarget);
+
+				// magnet force
+				Vector3 radial = worldSpaceAnchor - source.position;
+				float distance = radial.magnitude;
+				Vector3 lateral = Vector3.ProjectOnPlane(source.forward, radial);
+				float attenuation = distance / range;
 				Vector3 force
-					= (dirToTarget + normal * (int) polarity).normalized
-					* attenuation.Evaluate(distance / range)
-					* forceMagnitude * (int) polarity;
+					= radial.normalized * radialAttenuation.Evaluate(attenuation) * maxRadialForce * (int) polarity
+					+ lateral * lateralAttenuation.Evaluate(attenuation) * maxLateralForce;
+				normal = force.normalized;
 				if (target.body != null) {
 					target.body.AddForceAtPosition(force, worldSpaceAnchor);
 				}

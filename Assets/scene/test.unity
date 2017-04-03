@@ -377,6 +377,126 @@ Prefab:
       propertyPath: m_LocalRotation.w
       value: 0.68525904
       objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: maxLateralForce
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: maxLateralForce
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: maxRadialForce
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: maxRadialForce
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_Curve.Array.data[0].inSlope
+      value: 0.018206848
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_Curve.Array.data[0].outSlope
+      value: 0.018206848
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_Curve.Array.data[1].outSlope
+      value: -3.0068035
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_Curve.Array.data[0].inSlope
+      value: 0.018206848
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_Curve.Array.data[0].outSlope
+      value: 0.018206848
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_Curve.Array.data[1].outSlope
+      value: -3.0068035
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_Curve.Array.data[1].inSlope
+      value: -3.0068035
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: radialAttenuation.m_Curve.Array.data[1].inSlope
+      value: -3.0068035
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_Curve.Array.data[0].inSlope
+      value: 0.018206848
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_Curve.Array.data[0].outSlope
+      value: 0.018206848
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_Curve.Array.data[1].inSlope
+      value: -3.0068035
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_Curve.Array.data[1].outSlope
+      value: -3.0068035
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_Curve.Array.data[0].inSlope
+      value: 0.018206848
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_Curve.Array.data[0].outSlope
+      value: 0.018206848
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_Curve.Array.data[1].inSlope
+      value: -3.0068035
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_Curve.Array.data[1].outSlope
+      value: -3.0068035
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: lateralAttenuation.m_RotationOrder
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 34594e152360740c69a1527a82d27aa9, type: 2}
   m_IsPrefabParent: 0
