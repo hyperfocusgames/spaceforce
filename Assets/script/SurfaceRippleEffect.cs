@@ -27,8 +27,11 @@ public class SurfaceRippleEffect : SingletonBehaviour<SurfaceRippleEffect> {
 	int pushCenter_ID;
 	int pullCenter_ID;
 
-	int pushEnabled_ID;
-	int pullEnabled_ID;
+	int pushEnabledStatic_ID;
+	int pullEnabledStatic_ID;
+
+	int pushEnabledLocal_ID;
+	int pullEnabledLocal_ID;
 
 	void Awake() {
 
@@ -44,8 +47,11 @@ public class SurfaceRippleEffect : SingletonBehaviour<SurfaceRippleEffect> {
 		pushCenter_ID = Shader.PropertyToID("_PushCenter");
 		pullCenter_ID = Shader.PropertyToID("_PullCenter");
 
-		pushEnabled_ID = Shader.PropertyToID("_PushEnabled");
-		pullEnabled_ID = Shader.PropertyToID("_PullEnabled");
+		pushEnabledStatic_ID = Shader.PropertyToID("_PushEnabledStatic");
+		pullEnabledStatic_ID = Shader.PropertyToID("_PullEnabledStatic");
+
+		pushEnabledLocal_ID = Shader.PropertyToID("_PushEnabledLocal");
+		pullEnabledLocal_ID = Shader.PropertyToID("_PullEnabledLocal");
 
 		mainCam = GetComponent<Camera>();
 		effectCam = new GameObject("surface ripple effect camera").AddComponent<Camera>();
@@ -72,28 +78,34 @@ public class SurfaceRippleEffect : SingletonBehaviour<SurfaceRippleEffect> {
 		Shader.SetGlobalColor(pullColor_ID, pullColor);
 	}
 
-	public static void EnableRipple(MagnetController.Polarity polarity, Vector3 center) {
+	public static void SetStaticRipple(bool enabled, MagnetController.Polarity polarity, Vector3 center) {
 		switch (polarity) {
 			case MagnetController.Polarity.Push:
 				Shader.SetGlobalVector(instance.pushCenter_ID, center);
-				Shader.SetGlobalFloat(instance.pushEnabled_ID, 1);
+				Shader.SetGlobalFloat(instance.pushEnabledStatic_ID, enabled ? 1 : 0);
 				break;
 			case MagnetController.Polarity.Pull:
 				Shader.SetGlobalVector(instance.pullCenter_ID, center);
-				Shader.SetGlobalFloat(instance.pullEnabled_ID, 1);
+				Shader.SetGlobalFloat(instance.pullEnabledStatic_ID, enabled ? 1 : 0);
 				break;
 		}
 	}
 
-	public static void DisableRipple(MagnetController.Polarity polarity) {
+	private static MaterialPropertyBlock block;
+	public static void SetLocalRipple(bool enabled, MagnetController.Polarity polarity, Vector3 center, Magnetic target) {
+		if (block == null) block = new MaterialPropertyBlock();
+		target.render.GetPropertyBlock(block);
 		switch (polarity) {
 			case MagnetController.Polarity.Push:
-				Shader.SetGlobalFloat(instance.pushEnabled_ID, 0);
+				block.SetVector(instance.pushCenter_ID, center);
+				block.SetFloat(instance.pushEnabledLocal_ID, enabled ? 1 : 0);
 				break;
 			case MagnetController.Polarity.Pull:
-				Shader.SetGlobalFloat(instance.pullEnabled_ID, 0);
+				block.SetVector(instance.pullCenter_ID, center);
+				block.SetFloat(instance.pullEnabledLocal_ID, enabled ? 1 : 0);
 				break;
 		}
+		target.render.SetPropertyBlock(block);
 	}
 
 }

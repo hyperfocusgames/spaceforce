@@ -21,6 +21,7 @@ public class Magnetic : MonoBehaviour {
 	}
 
 	static int magneticFlag_ID;
+	static int staticFlag_ID;
 	static MaterialPropertyBlock block;
 
 	void Awake() {
@@ -29,8 +30,10 @@ public class Magnetic : MonoBehaviour {
 		if (block == null) {
 			block = new MaterialPropertyBlock();
 			magneticFlag_ID = Shader.PropertyToID("_MagneticFlag");
+			staticFlag_ID = Shader.PropertyToID("_StaticFlag");
 			block.SetFloat(magneticFlag_ID, 1);
 		}
+		block.SetFloat(staticFlag_ID, isStatic ? 1 : 0);
 		render.SetPropertyBlock(block);
 	}
 

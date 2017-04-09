@@ -88,7 +88,12 @@ public class MagnetController : MonoBehaviour {
 					body.AddForce(- force);
 
 					// ripple effect
-					SurfaceRippleEffect.EnableRipple(polarity, worldSpaceAnchor);
+					if (target.isStatic) {
+						SurfaceRippleEffect.SetStaticRipple(true, polarity, worldSpaceAnchor);
+					}
+					else {
+						SurfaceRippleEffect.SetLocalRipple(true, polarity, worldSpaceAnchor, target);
+					}
 				}
 			}
 		}
@@ -96,10 +101,15 @@ public class MagnetController : MonoBehaviour {
 
 	void Detarget() {
 		if (target != null) {
-				SurfaceRippleEffect.DisableRipple(polarity);
-				target.activeController = null;
+			if (target.isStatic) {
+				SurfaceRippleEffect.SetStaticRipple(false, polarity, worldSpaceAnchor);
 			}
-			target = null;
+			else {
+				SurfaceRippleEffect.SetLocalRipple(false, polarity, worldSpaceAnchor, target);
+			}
+			target.activeController = null;
+		}
+		target = null;
 	}
 
 

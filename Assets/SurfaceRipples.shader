@@ -18,7 +18,8 @@
 			
 			#include "UnityCG.cginc"
 
-			float _MagneticFlag = 0;
+			float _MagneticFlag = 0;	// is this object magnetic?
+			float _StaticFlag = 0;		// is this object static?
 
 			float _Wavelength;
 			float _Speed;
@@ -26,8 +27,13 @@
 			float _Radius;
 			float _PulseWidth;
 
-			float _PushEnabled = 0;
-			float _PullEnabled = 0;
+			// enabled flags for non static objects
+			float _PushEnabledLocal = 0;
+			float _PullEnabledLocal = 0;
+
+			// enabled flags for static objects
+			float _PushEnabledStatic = 0;
+			float _PullEnabledStatic = 0;
 
 			fixed4 _PushColor;
 			fixed4 _PullColor;
@@ -66,9 +72,11 @@
 			}
 			
 			fixed4 frag (v2f i) : SV_Target {
-				if (_MagneticFlag != 0) {
-					float push = _PushEnabled != 0 ? ripple(_PushCenter, i.worldVert, 1) : 0;
-					float pull = _PullEnabled != 0 ? ripple(_PullCenter, i.worldVert, -1) : 0;
+				if (_MagneticFlag > 0) {
+					float pushEnabled = _StaticFlag != 0 ? _PushEnabledStatic : _PushEnabledLocal;
+					float pullEnabled = _StaticFlag != 0 ? _PullEnabledStatic : _PullEnabledLocal;
+					float push = pushEnabled != 0 ? ripple(_PushCenter, i.worldVert, 1) : 0;
+					float pull = pullEnabled != 0 ? ripple(_PullCenter, i.worldVert, -1) : 0;
 					fixed4 pushColor = _PushColor;
 					fixed4 pullColor = _PullColor;
 					pushColor.w *= push;
