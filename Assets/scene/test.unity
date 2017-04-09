@@ -180,11 +180,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 23425747554490616, guid: 357e28256741e204bae18dbc03e6370f,
-        type: 2}
-      propertyPath: m_Materials.Array.size
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 4926866366267386, guid: 357e28256741e204bae18dbc03e6370f, type: 2}
       propertyPath: m_LocalPosition.x
       value: 2.11
@@ -385,19 +380,49 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4320060445404556, guid: 34594e152360740c69a1527a82d27aa9, type: 2}
       propertyPath: m_LocalRotation.x
-      value: 0.15169466
+      value: 0.15169464
       objectReference: {fileID: 0}
     - target: {fileID: 4320060445404556, guid: 34594e152360740c69a1527a82d27aa9, type: 2}
       propertyPath: m_LocalRotation.y
-      value: -0.69858056
+      value: -0.6985805
       objectReference: {fileID: 0}
     - target: {fileID: 4320060445404556, guid: 34594e152360740c69a1527a82d27aa9, type: 2}
       propertyPath: m_LocalRotation.z
-      value: 0.13926283
+      value: 0.13926281
       objectReference: {fileID: 0}
     - target: {fileID: 4320060445404556, guid: 34594e152360740c69a1527a82d27aa9, type: 2}
       propertyPath: m_LocalRotation.w
-      value: 0.68525904
+      value: 0.685259
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: range
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: range
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: maxLateralForce
+      value: 750
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: maxLateralForce
+      value: 750
+      objectReference: {fileID: 0}
+    - target: {fileID: 114322353145869838, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: maxRadialForce
+      value: 750
+      objectReference: {fileID: 0}
+    - target: {fileID: 114310476631861766, guid: 34594e152360740c69a1527a82d27aa9,
+        type: 2}
+      propertyPath: maxRadialForce
+      value: 750
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 34594e152360740c69a1527a82d27aa9, type: 2}
